@@ -6,6 +6,14 @@
   accent-color: #7c3aed;
 
   --hex-size: 5rem;
+
+  --color0: #000000;
+  --color1: #62e062;
+  --color2: #135806;
+  --color3: #b67521;
+  --color4: #2360bd;
+  --color5: #795c50;
+  --color6: #424242;
 }
 
 #grid-container {
@@ -31,11 +39,14 @@
 .hex-border {
   height:             var(--hex-size);
   width:              var(--hex-size);
-  background-color: white;
+  background: white;
   margin:             0px calc(-0.25 * var(--hex-size)) 0px 0px ;
   clip-path: polygon(25% 0%, 75% 0%, 100% 50%, 75% 100%, 25% 100%, 0% 50%);
   padding: 2px;
+}
 
+.hex-border:hover {
+  background: #6297e7;
 }
 
 .hex-cell {
@@ -56,6 +67,34 @@
   background: transparent;
 }
 
-.hex-cover:hover {
+/* .hex-cover:hover {
   background: rgba(255, 255, 255, 0.2);
+} */
+
+.c0 {
+  background: var(--color0);
+}
+
+.c1 {
+  background: var(--color1);
+}
+
+.c2 {
+  background: var(--color2);
+}
+
+.c3 {
+  background: var(--color3);
+}
+
+.c4 {
+  background: var(--color4);
+}
+
+.c5 {
+  background: var(--color5);
+}
+
+.c6 {
+  background: var(--color6);
 }
