@@ -1,55 +1,51 @@
-/* Basic reset + accessible dark theme colors */
 :root {
   color-scheme: dark;
   font-family: Inter, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
   background-color: #0f172a;
   color: #e2e8f0;
   accent-color: #7c3aed;
+
+  --hex-size: 5rem;
 }
 
 #grid-container {
   display: flex;
   flex-direction: row;
-  gap: 0.75rem;
-  width: min(100%, 72rem);
-  width: 100%;
+  width: 50%;
   margin-top: 2rem;
 }
 
-.hex-row {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(8rem, 1fr));
-  gap: 0.75rem;
-  justify-content: center;
+.hex-col {
+  display: flex;
+  flex-direction: column;
 }
 
-.hex-row.offset {
-  padding-block-start: calc(4rem + 0.375rem);
+.hex-col.offset {
+  padding-block-start: calc(var(--hex-size) * 0.5);
+}
+
+.hex-col:not(.offset) {
+  padding-block-end: calc(var(--hex-size) * 0.5);
+}
+
+.hex-border {
+  height:             var(--hex-size);
+  width:              var(--hex-size);
+  background-color: white;
+  margin:             0px calc(-0.25 * var(--hex-size)) 0px 0px ;
+  clip-path: polygon(25% 0%, 75% 0%, 100% 50%, 75% 100%, 25% 100%, 0% 50%);
+  padding: 2px;
+
 }
 
 .hex-cell {
   position: relative;
-  min-width: 8rem;
-  aspect-ratio: 1 / 1.155;
-  background: rgba(59, 130, 246, 0.15);
-  border: 1px solid rgba(148, 163, 184, 0.28);
+  height: 100%;
+  width: 100%;
+  background: rgb(7, 3, 27);
   color: #e2e8f0;
-  display: grid;
-  place-items: center;
-  text-shadow: 0 1px 2px rgba(15, 23, 42, 0.4);
+  display: flex;
+  align-items: center;
+  justify-content: center;
   clip-path: polygon(25% 0%, 75% 0%, 100% 50%, 75% 100%, 25% 100%, 0% 50%);
-}
-
-.hex-cell::before {
-  content: "";
-  position: absolute;
-  inset: 0;
-  background: linear-gradient(180deg, rgba(99, 102, 241, 0.18), transparent 70%);
-  opacity: 0.75;
-  clip-path: inherit;
-}
-
-.hex-cell > * {
-  position: relative;
-  z-index: 1;
 }
