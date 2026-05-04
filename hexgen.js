@@ -1,10 +1,20 @@
 const nRows = 7;
 const nCols = 20;
 
+const markovTable = [
+    [4, 4, 2, 2, 1, 1, 1, 5, 5, 3, 3], // 1: Field transitions
+    [1, 1, 2, 2, 2, 2, 2, 4, 4, 5, 5], // 2: Forest transitions
+    [1, 1, 1, 2, 2, 1, 2, 2, 1, 1, 1], // 3: Village (Isolated)
+    [4, 4, 4, 1, 1, 1, 1, 1, 2, 4, 4], // 4: Lake (Chaining tails)
+    [1, 1, 1, 1, 5, 5, 5, 6, 6, 6, 6], // 5: Hills
+    [6, 6, 4, 4, 5, 5, 5, 5, 4, 6, 6]  // 6: Mountain (Chaining tails)
+]
+
 document.addEventListener("DOMContentLoaded", async function() {
     const hexGridDiv = document.getElementById("grid-container");
 
     hexGridDiv.addEventListener('click', (e) => hexClickEvent(e));
+    hexGridDiv.addEventListener('contextmenu', (e) => hexRightClickEvent(e));
 
     const hexCol = document.createElement("div");
     hexCol.classList.add("hex-col");
@@ -35,11 +45,26 @@ document.addEventListener("DOMContentLoaded", async function() {
 
 });
 
+function randomInt(max){
+    return Math.floor(Math.random() * max);
+}
+
+function hexRightClickEvent(event){
+    event.preventDefault();
+    const target = event.target;
+
+    const hex = target.closest('.hex-cell');
+    setState(chooseRandomEmptyHex(hex), markovStateTransition(hex));
+
+    return false;
+}
+
 function hexClickEvent(event){
     const target = event.target;
 
     const hex = target.closest('.hex-cell');
-    // getNeighborHexes(hex).forEach((h) => cycleState(h));
+    // getNeighborHexes(hex).forEach((h) => cycleState(h)); // Testing getting neighbors
+    // setState(chooseRandomEmptyHex(hex), randomInt(6)+1);    // Testing random neighbor and set state
     cycleState(hex);
 }
 
@@ -71,6 +96,22 @@ function cycleState(hex){
     }
 }
 
+function markovStateTransition(hex){
+    const currentClass = [...hex.classList].find(cls => /^c[0-6]$/.test(cls));
+
+    if (currentClass) {
+        const currentIndex = parseInt(currentClass.substring(1));
+        const diceRoll = randomInt(6) + randomInt(6);
+        const nextState = markovTable[currentIndex-1][diceRoll];
+        printMsg(`Rolled ${diceRoll}. Next State: ${nextState}`);
+
+        return nextState;
+        
+    } else {
+        return 0;
+    }
+}
+
 function getNeighborHexes(cHex) {
     const col = parseInt(cHex.dataset.col);
     const row = parseInt(cHex.dataset.row);
@@ -84,4 +125,18 @@ function getNeighborHexes(cHex) {
     return dir.map(([dc, dr]) => {
         return document.querySelector(`.hex-cell[data-col="${col+dc}"][data-row="${row+dr}"]`);
     }).filter(n => n !== null);
+}
+
+function chooseRandomEmptyHex(cHex) {
+    const neighbors = getNeighborHexes(cHex);
+    const emptyNeighbors = neighbors.filter(n => n.classList.contains('c0'));
+
+    if (emptyNeighbors.length === 0) return null;
+    const index = randomInt(emptyNeighbors.length);
+
+    return emptyNeighbors[index];
+}
+
+function printMsg(string){
+    document.getElementById('msg').innerHTML = string;
 }
