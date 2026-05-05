@@ -54,7 +54,7 @@ function hexRightClickEvent(event){
     const target = event.target;
 
     const hex = target.closest('.hex-cell');
-    setState(chooseRandomEmptyHex(hex), markovStateTransition(hex));
+    setState(getEmptyNeighborHexes(hex)[0], markovStateTransition(hex));
 
     return false;
 }
@@ -119,17 +119,21 @@ function getNeighborHexes(cHex) {
     const isOdd = col % 2 !== 0;
 
     const dir = isOdd ? 
-        [[0, -1], [0, 1], [-1, 0], [-1, 1], [1, 0], [1, 1]] :
-        [[0, -1], [0, 1], [-1, -1], [-1, 0], [1, -1], [1, 0]];
+        [[0, -1], [1, 0], [1, 1], [0, 1], [-1, 1], [-1, 0]] :
+        [[0, -1], [1, -1], [1, 0], [0, 1], [-1, 0], [-1, -1]];
 
     return dir.map(([dc, dr]) => {
         return document.querySelector(`.hex-cell[data-col="${col+dc}"][data-row="${row+dr}"]`);
     }).filter(n => n !== null);
 }
 
-function chooseRandomEmptyHex(cHex) {
+function getEmptyNeighborHexes(cHex) {
     const neighbors = getNeighborHexes(cHex);
-    const emptyNeighbors = neighbors.filter(n => n.classList.contains('c0'));
+    return neighbors.filter(n => n.classList.contains('c0'));
+}
+
+function chooseRandomEmptyHex(cHex) {
+    const emptyNeighbors = getEmptyNeighborHexes(cHex);
 
     if (emptyNeighbors.length === 0) return null;
     const index = randomInt(emptyNeighbors.length);
